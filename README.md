@@ -24,11 +24,14 @@ echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/90-passwordless &&
 Run some preparations for the installer and then the install script:
 ```shell
 sudo apt install git
-
+```
+```shell
 git clone https://github.com/klaasjand/ornare.git
-
+```
+```shell
 cd ornare
-
+```
+```shell
 bash install.sh
 ```
 
