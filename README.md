@@ -25,7 +25,7 @@ Run some preparations for the installer and then the install script:
 ```shell
 sudo apt install git
 
-git clone https://github.com/klaasjand/ornare.git 
+git clone https://github.com/klaasjand/ornare.git
 
 cd ornare
 
