@@ -34,6 +34,44 @@ bash install.sh
 
 Logout and login again to see the result and use Ornare.
 
+## Using Ornare
+
+Below are some simple examples of how to use Ornare.
+
+### Kubernetes & Minikube
+
+```shell
+mkdir foo
+cd foo
+navi
+```
+Choose `Install minikube locally for the current directory`, select a version and press ENTER.
+```shell
+navi
+```
+Choose `Start minikube with custom resources and k8s version`, select your desired configuration and press ENTER.
+```shell
+navi
+```
+Choose `Install kubectl locally for the current directory`, select a version and press ENTER.
+```shell
+kubectl cluster-info
+
+kubectl get pods -A
+```
+
+### Install Go
+
+```shell
+mkdir bar
+cd bar
+navi
+```
+Choose `Install go locally for the current directory`, select a version and press ENTER.
+```shell
+go version
+```
+
 ## Toolstack
 
 * Neovim
