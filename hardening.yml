@@ -1,0 +1,13 @@
+---
+- name: Hardening Ornare
+  hosts:
+    - ornare
+  vars:
+    sysctl_overwrite:
+      # Enable IPv4 traffic forwarding for Docker
+      net.ipv4.ip_forward: 1
+    ssh_allow_tcp_forwarding: true
+    ssh_allow_users: "{{ ornare_user }}"
+  roles:
+    - devsec.hardening.ssh_hardening
+    - devsec.hardening.os_hardening

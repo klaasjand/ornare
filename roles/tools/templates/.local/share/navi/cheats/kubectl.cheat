@@ -1,0 +1,4 @@
+% kubectl, info
+
+# Show current kubectl version and cluster context
+mise exec -- kubectl version --client && kubectl config current-context

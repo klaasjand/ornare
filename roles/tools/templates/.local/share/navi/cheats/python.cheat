@@ -1,0 +1,13 @@
+% uv, project, local
+
+# Create a local virtual environment with a specific Python version
+uv venv --python <python_version>
+
+$ python_version: uv python list | awk '{print $1}' | sort -Vr
+
+---
+
+% python, venv, project, local
+
+# Create a new Python virtualenv with the system Python version
+python3 -m venv .venv

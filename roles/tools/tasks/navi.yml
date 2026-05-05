@@ -1,0 +1,21 @@
+---
+- name: Create navi cheats directory
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.local/share/navi/cheats"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0755"
+
+- name: Create navi cheatfiles
+  ansible.builtin.template:
+    src: ".local/share/navi/cheats/{{ item }}"
+    dest: "/home/{{ ornare_user }}/.local/share/navi/cheats/{{ item }}"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+  loop:
+    - kubectl.cheat
+    - minikube.cheat
+    - mise.cheat
+    - python.cheat

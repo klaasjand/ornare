@@ -1,0 +1,45 @@
+---
+- name: Install UFW firewall
+  ansible.builtin.apt:
+    name:
+      - ufw
+    state: present
+
+- name: Allow SSH traffic (Default enabled)
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+  when: firewall_allow_ssh
+
+- name: Set default policy to deny incoming
+  community.general.ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+
+- name: Set default policy to allow outgoing
+  community.general.ufw:
+    state: enabled
+    policy: allow
+    direction: outgoing
+
+- name: Create firewall port allow rules for UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  loop: "{{ firewall_port_rules }}"
+  loop_control:
+    label: "{{ item.port }}/{{ item.proto }}"
+  when: firewall_port_rules is defined and item.state == "present"
+
+- name: Delete firewall port allow rules for UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    delete: true
+  loop: "{{ firewall_port_rules }}"
+  loop_control:
+    label: "{{ item.port }}/{{ item.proto }}"
+  when: firewall_port_rules is defined and item.state == "absent"

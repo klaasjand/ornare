@@ -1,0 +1,41 @@
+---
+- name: Create tmux directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0755"
+  loop:
+    - "{{ tools_tmux_config_path }}"
+    - "{{ tools_tmux_plugin_path }}"
+
+- name: Clone tmux plugins
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ tools_tmux_plugin_path }}/{{ item.plugin }}"
+    update: false # Don't re-clone if it already exists
+    version: "HEAD" # noqa: latest[git]
+  become: true
+  become_user: "{{ ornare_user }}"
+  loop: "{{ tools_tmux_plugins }}"
+
+- name: Create tmux config file
+  ansible.builtin.template:
+    src: ".config/tmux/tmux.conf"
+    dest: "{{ tools_tmux_config_path }}/tmux.conf"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+
+- name: Install tmux plugins (can also be done manually with prefix + I)
+  ansible.builtin.command:
+    cmd: "{{ tools_tmux_plugin_path }}/tpm/bin/install_plugins"
+  become: true
+  become_user: "{{ ornare_user }}"
+  register: tools_tpm_install
+  changed_when: "'Installing' in tools_tpm_install.stdout"
+
+# - name: Show output
+#   ansible.builtin.debug:
+#     msg: "{{ tools_tpm_install }}"

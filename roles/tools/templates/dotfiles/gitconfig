@@ -1,0 +1,25 @@
+[core]
+    excludesfile = ~/.gitignore_global
+
+[init]
+    defaultBranch = main
+
+# [user]
+#     name =
+#     email =
+
+[pull]
+    ff = only # fast-forward only
+
+[alias]
+    f = fetch
+    pu = pull
+    co = checkout
+    cob = checkout -b
+    b = branch
+    s = status
+    cm = commit -m
+    ls = log --graph --date-order --pretty=format:"%C(yellow)%h\\ %C(magenta)(%ar)\\ %C(green)%d\\ %C(bold\\ blue)%al%Creset\\ -\\ %s"
+    ll = log -p
+    main = checkout main
+    h = "!git config -l | grep alias | cut -c 7-"

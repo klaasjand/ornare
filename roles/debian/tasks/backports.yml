@@ -1,0 +1,13 @@
+---
+- name: Add Debian Backports using DEB822 format
+  ansible.builtin.deb822_repository:
+    name: backports
+    types: deb
+    uris: "http://deb.debian.org/debian"
+    suites: "{{ ansible_distribution_release }}-backports"
+    components:
+      - main
+    state: present
+    enabled: true
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+  when: debian_backports_enabled

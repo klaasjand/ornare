@@ -1,0 +1,48 @@
+---
+- name: Install fish shell and additions
+  ansible.builtin.apt:
+    name:
+      - fish
+    state: latest
+  # noqa package-latest
+
+- name: Create fish directories
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.config/fish/{{ item }}"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0755"
+  loop:
+    - conf.d
+    - functions
+    - completions
+
+- name: Add fish config
+  ansible.builtin.template:
+    src: ".config/fish/config.fish"
+    dest: "/home/{{ ornare_user }}/.config/fish/config.fish"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+
+# - name: Add fish functions
+#   ansible.builtin.template:
+#     src: ".config/fish/functions/{{ item }}"
+#     dest: "/home/{{ ornare_user }}/.config/fish/functions/{{ item }}"
+#     owner: "{{ ornare_user }}"
+#     group: "{{ ornare_user }}"
+#     mode: "0644"
+#   loop:
+#     - filename.fish
+
+- name: Start fish ONLY for interactive sessions (edit .bashrc)
+  ansible.builtin.blockinfile:
+    path: "/home/{{ ornare_user }}/.bashrc"
+    block: |
+      # Start fish for interactive sessions and KEEP the default shell bash (which makes VS Code and/or rsync happy)
+      # See: https://unix.stackexchange.com/questions/26676/how-to-check-if-a-shell-is-login-interactive-batch
+      if [[ $- == *i* ]]; then
+          exec fish
+      fi
+    state: present

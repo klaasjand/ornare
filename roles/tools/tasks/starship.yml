@@ -1,0 +1,8 @@
+---
+- name: Create starship config file
+  ansible.builtin.template:
+    src: .config/starship.toml
+    dest: "/home/{{ ornare_user }}/.config/starship.toml"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"

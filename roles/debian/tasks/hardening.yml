@@ -1,0 +1,53 @@
+---
+- name: Install hardening prerequisites
+  ansible.builtin.apt:
+    name:
+      - lynis
+      - debsums
+      - apparmor-utils
+      - aide # File integrity monitoring
+    state: latest
+  # noqa package-latest
+
+- name: Remove potentially insecure packages
+  ansible.builtin.apt:
+    name:
+      - inetutils-telnet
+    state: absent
+
+- name: Create modprobe configuration to disable usb-storage and uas
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/99-disable-usb-storage.conf
+    content: |
+      install usb-storage /bin/true
+      install uas /bin/true
+    owner: root
+    group: root
+    mode: "0644"
+  when: debian_usb_disabled
+  notify: Update initramfs
+
+- name: Create modprobe configuration to disable firewire
+  ansible.builtin.copy:
+    dest: "/etc/modprobe.d/99-disable-firewire.conf"
+    content: |
+      install firewire-core /bin/true
+      install thunderbolt /bin/true
+    owner: root
+    group: root
+    mode: "0644"
+  when: debian_firewire_disabled
+  notify: Update initramfs
+
+- name: Disable IPv6 via sysctl
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "1"
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-disable-ipv6.conf
+  loop:
+    - { name: "net.ipv6.conf.all.disable_ipv6" }
+    - { name: "net.ipv6.conf.default.disable_ipv6" }
+    - { name: "net.ipv6.conf.lo.disable_ipv6" }
+  when: debian_ipv6_disabled

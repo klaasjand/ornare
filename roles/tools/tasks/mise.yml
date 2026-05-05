@@ -1,0 +1,65 @@
+---
+- name: Add mise-en-place DEB822 repository
+  ansible.builtin.deb822_repository:
+    name: mise
+    types: deb
+    uris: "{{ tools_mise_apt_uri }}"
+    suites: stable
+    components:
+      - main
+    state: present
+    enabled: true
+    signed_by: "{{ tools_mise_apt_gpgkey }}"
+
+- name: Install mise
+  ansible.builtin.apt:
+    name:
+      - mise
+    state: latest
+    update_cache: true
+  # noqa package-latest
+
+- name: Create mise config directory
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.config/mise"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0755"
+
+- name: Create mise config file for tools
+  ansible.builtin.template:
+    src: .config/mise/config.toml
+    dest: "/home/{{ ornare_user }}/.config/mise/config.toml"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+  register: tools_mise_config
+
+- name: Install mise tools, this may take a while
+  ansible.builtin.command:
+    cmd: "mise install --yes"
+  become: true
+  become_user: "{{ ornare_user }}"
+  when: tools_mise_config.changed
+  # noqa no-handler
+  # noqa no-changed-when
+
+- name: Create fish config file for mise and tools
+  ansible.builtin.template:
+    src: .config/fish/conf.d/mise.fish
+    dest: "/home/{{ ornare_user }}/.config/fish/conf.d/mise.fish"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+
+- name: Generate mise fish completions
+  ansible.builtin.shell:
+    cmd: "mise completion fish > /home/{{ ornare_user }}/.config/fish/completions/mise.fish"
+    creates: "/home/{{ ornare_user }}/.config/fish/completions/mise.fish"
+
+- name: Run tasks for navi
+  ansible.builtin.include_tasks: "navi.yml"
+
+- name: Run tasks for starship
+  ansible.builtin.include_tasks: "starship.yml"

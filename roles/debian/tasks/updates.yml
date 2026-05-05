@@ -1,0 +1,27 @@
+---
+# See: https://wiki.debian.org/PeriodicUpdates
+- name: Install unattended-upgrades
+  ansible.builtin.apt:
+    name:
+      - unattended-upgrades
+      - apt-listchanges
+    state: latest
+    update_cache: true
+  # noqa package-latest
+
+- name: Create 52unattended-upgrades-local
+  ansible.builtin.template:
+    src: "etc/apt/apt.conf.d/52unattended-upgrades-local"
+    dest: "/etc/apt/apt.conf.d/52unattended-upgrades-local"
+    owner: root
+    group: root
+    mode: "0644"
+
+# This is effectively what sudo dpkg-reconfigure unattended-upgrades does
+- name: Create 20auto-upgrades
+  ansible.builtin.template:
+    src: "etc/apt/apt.conf.d/20auto-upgrades"
+    dest: "/etc/apt/apt.conf.d/20auto-upgrades"
+    owner: root
+    group: root
+    mode: "0644"

@@ -1,0 +1,37 @@
+---
+- name: Install development tools
+  ansible.builtin.apt:
+    name: "{{ tools_apt }}"
+    state: latest
+  # noqa package-latest
+
+- name: Create dotfiles
+  ansible.builtin.template:
+    src: "dotfiles/{{ item }}"
+    dest: "/home/{{ ornare_user }}/.{{ item }}"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+  loop:
+    - gitconfig
+    - gitignore_global
+
+- name: Run tasks for bat
+  ansible.builtin.include_tasks: "bat.yml"
+
+- name: Run tasks for mise
+  ansible.builtin.include_tasks: "mise.yml"
+
+- name: Run tasks for configuring neovim
+  ansible.builtin.include_tasks: "nvim.yml"
+
+- name: Run tasks for tmux
+  ansible.builtin.include_tasks: "tmux.yml"
+
+- name: Create fish config file for tools
+  ansible.builtin.template:
+    src: .config/fish/conf.d/tools.fish
+    dest: "/home/{{ ornare_user }}/.config/fish/conf.d"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"

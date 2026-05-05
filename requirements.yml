@@ -1,0 +1,10 @@
+---
+# NOTE: Add these roles/dependencies to the .gitignore file
+roles:
+  - name: geerlingguy.docker
+    src: https://github.com/geerlingguy/ansible-role-docker
+    version: "8.0.0"
+collections:
+  - name: https://github.com/dev-sec/ansible-collection-hardening.git
+    type: git
+    version: "10.5.2"

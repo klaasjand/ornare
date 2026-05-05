@@ -1,0 +1,41 @@
+---
+- name: Update apt cache and install prerequisites
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600 # Only update cache if it's older than 1 hour
+    name:
+      - chrony
+      - apt-listbugs # Check for known bugs that might break the system before (manual) installation
+      - apt-show-versions
+      - needrestart
+      - python3-debian
+      - fastfetch
+    state: latest
+  # noqa package-latest
+
+- name: Remove unused dependency packages
+  ansible.builtin.apt:
+    autoremove: true
+
+- name: Clean up local repository of retrieved package files
+  ansible.builtin.apt:
+    autoclean: true
+
+- name: Run tasks for Debian unattended updates
+  ansible.builtin.include_tasks: "updates.yml"
+  when: debian_unattended_updates_enabled
+
+- name: Run tasks for Debian backports
+  ansible.builtin.include_tasks: "backports.yml"
+  when: debian_backports_enabled
+
+- name: Silence the Debian welcome message
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.hushlogin"
+    state: touch
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve
+
+- name: Run tasks for basic Debian hardening
+  ansible.builtin.include_tasks: "hardening.yml"

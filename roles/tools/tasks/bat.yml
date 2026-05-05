@@ -1,0 +1,36 @@
+---
+- name: Create symlink for batcat to bat
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: /usr/local/bin/bat
+    state: link
+
+- name: Create bat config directories
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.config/bat/themes"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0755"
+
+- name: Download and add bat themes
+  ansible.builtin.get_url:
+    url: "{{ tools_bat_theme_url }}/{{ item }}"
+    dest: "/home/{{ ornare_user }}/.config/bat/themes/{{ item | regex_replace('%20', '-') }}"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+  loop:
+    - Catppuccin%20Frappe.tmTheme
+    - Catppuccin%20Latte.tmTheme
+    - Catppuccin%20Macchiato.tmTheme
+    - Catppuccin%20Mocha.tmTheme
+  notify: Update bat cache
+
+- name: Create fish config file for bat
+  ansible.builtin.template:
+    src: .config/fish/conf.d/bat.fish
+    dest: "/home/{{ ornare_user }}/.config/fish/conf.d/bat.fish"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"

@@ -1,0 +1,25 @@
+#
+# How to check which backend is used:
+# mise use -g lazydocker -n -v
+# DEBUG [aqua:jesseduffield/lazydocker@0.25.0]
+#
+# mise use -g aqua:neovim/neovim@latest -n -v
+# DEBUG [aqua:neovim/neovim@0.11.6]
+#
+# How to check what is installed and which backends are used:
+# mise doctor
+#
+# Search for tools in the Aqua backend:
+# https://github.com/aquaproj/aqua-registry
+# or:
+# mise ls-remote aqua:neovim/neovim
+#
+[tools]
+"aqua:neovim/neovim" = "latest"
+"cargo:navi" = "latest"
+"cargo:pastel" = "latest"
+"cargo:tealdeer" = "latest"
+lazydocker = "latest"
+rust = "latest"
+starship = "latest"
+usage = "latest"

@@ -1,0 +1,38 @@
+---
+tools_apt:
+  - git
+  - gcc
+  - make
+  - wget
+  - bat
+  - fzf
+  - btop
+  - eza
+  - lazygit
+  - ripgrep
+  - zoxide
+  - entr
+  - du-dust
+  - fd-find
+  - tmux
+  - jq
+  - curl
+  - asciinema
+  - python3-venv
+  - ipcalc
+  - cmatrix
+  - unzip
+  - gum
+
+tools_bat_theme_url: "https://raw.githubusercontent.com/catppuccin/bat/refs/heads/main/themes"
+
+tools_tmux_config_path: "/home/{{ ornare_user }}/.config/tmux"
+tools_tmux_plugin_path: "{{ tools_tmux_config_path }}/plugins"
+tools_tmux_plugins:
+  - { plugin: "tpm", repo: "https://github.com/tmux-plugins/tpm.git" }
+  - { plugin: "catppuccin", repo: "https://github.com/catppuccin/tmux.git" }
+
+tools_mise_apt_uri: "https://mise.jdx.dev/deb"
+tools_mise_apt_gpgkey: "https://mise.jdx.dev/gpg-key.pub"
+
+tools_lazyvim_git_url: "https://github.com/LazyVim/starter"

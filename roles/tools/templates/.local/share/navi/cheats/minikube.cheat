@@ -1,0 +1,9 @@
+% minikube, kubernetes, startup
+
+# Start minikube with custom resources and k8s version
+minikube start --cpus=<cpus> --memory=<memory_mb> --driver=<driver> --kubernetes-version=<k8s_version>
+
+$ cpus: echo "2 4 8 16" | tr ' ' '\n'
+$ memory_mb: echo "4096 8192 16384" | tr ' ' '\n'
+$ driver: echo "docker virtualbox qemu2 kvm2" | tr ' ' '\n'
+$ k8s_version: curl -s https://api.github.com/repos/kubernetes/kubernetes/tags | jq -r '.[].name' | grep -vE 'rc|alpha|beta' | head -n 20

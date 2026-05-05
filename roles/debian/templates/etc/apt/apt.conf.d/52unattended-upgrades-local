@@ -1,0 +1,35 @@
+//
+// See: https://wiki.debian.org/PeriodicUpdates
+//
+// Show only uncommented lines in the original with:
+// rg -v '^\s*(//|#|$)' /etc/apt/apt.conf.d/50unattended-upgrades | cat -p
+//
+// Check which packages can be updated with:
+// sudo apt list --upgradable | grep -i security
+//
+// Run manually for debugging:
+// sudo unattended-upgrade -d
+// or:
+// sudo unattended-upgrade --dry-run --debug
+//
+// Check the scheduled timers with:
+// systemctl list-timers --all
+//
+// Check the active config with:
+// apt-config dump | grep "Unattended-Upgrade::Origins-Pattern"
+//
+
+// Clear any patterns inherited from the 50unattended upgrades file
+Unattended-Upgrade::Origins-Pattern:: "";
+#clear Unattended-Upgrade::Origins-Pattern;
+
+Unattended-Upgrade::Origins-Pattern {
+        {% if debian_unattended_updates_pointreleases_enabled -%}
+        "origin=Debian,codename=${distro_codename},label=Debian"; // Point releases
+        {% endif -%}
+        "origin=Debian,codename=${distro_codename},label=Debian-Security"; // Old labeling (backward compatibility)
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security"; // SECURITY UPDATES
+};
+
+Unattended-Upgrade::Package-Blacklist {
+};

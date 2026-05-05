@@ -1,0 +1,10 @@
+---
+debian_unattended_updates_enabled: true
+debian_unattended_updates_pointreleases_enabled: false
+
+debian_backports_enabled: false
+
+# Basic hardening settings
+debian_usb_disabled: true
+debian_firewire_disabled: true
+debian_ipv6_disabled: true

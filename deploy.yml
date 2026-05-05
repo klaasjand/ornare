@@ -1,0 +1,29 @@
+---
+- name: Prepare for Ornare installation
+  hosts:
+    - ornare
+  tasks:
+    - name: Verify OS requirements
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family == "Debian"
+        fail_msg: "Ornare requires a Debian-based OS."
+        success_msg: "OS check passed. Proceeding..."
+
+- name: Install Ornare
+  hosts:
+    - ornare
+  vars:
+    docker_install_compose_plugin: true
+    docker_users:
+      - "{{ ornare_user }}"
+    firewall_port_rules:
+      - port: 8080
+        proto: tcp
+        state: absent
+  roles:
+    - debian
+    - firewall
+    - fish
+    - geerlingguy.docker
+    - tools

@@ -1,0 +1,78 @@
+% minikube, mise, local
+
+# Install minikube locally for the current directory
+mise use minikube@<version>
+
+$ version: mise ls-remote minikube | sort -Vr | head -n 10
+
+---
+
+% kind, mise, local
+
+# Install kind locally for the current directory
+mise use kind@<version>
+
+$ version: mise ls-remote kind | sort -Vr | head -n 15
+
+---
+
+% kubectl, mise, local
+
+# Install kubectl locally for the current directory
+mise use kubectl@<version>
+
+$ version: mise ls-remote kubectl | sort -Vr | head -n 15
+
+---
+
+% helm, mise, local
+
+# Install helm locally for the current directory
+mise use helm@<version>
+
+$ version: mise ls-remote helm | sort -Vr | head -n 15
+
+---
+
+% k9s, mise, local
+
+# Install k9s locally for the current directory
+mise use k9s@<version>
+
+$ version: mise ls-remote k9s | sort -Vr | head -n 15
+
+---
+
+% uv, mise, local
+
+# Install uv locally for the current directory
+mise use uv@<version>
+
+$ version: mise ls-remote uv | sort -Vr | head -n 15
+
+---
+
+% uv, mise, cargo, local
+
+# Install uv locally using cargo for the current directory
+mise use cargo:uv@<version>
+
+$ version: mise ls-remote cargo:uv | sort -Vr | head -n 10
+
+---
+
+% go, mise, local
+
+# Install go locally for the current directory
+mise use go@<version>
+
+$ version: mise ls-remote go | sort -Vr | head -n 15
+
+---
+
+% rust, mise, local
+
+# Install rust locally for the current directory
+mise use rust@<version>
+
+$ version: mise ls-remote rust | sort -Vr | head -n 15

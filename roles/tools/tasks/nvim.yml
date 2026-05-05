@@ -1,0 +1,78 @@
+---
+- name: Uninstall Vim
+  ansible.builtin.apt:
+    name:
+      - vi
+      - vim
+    state: absent
+
+# NOTE: Installation takes place via mise to make sure neovim is recent.
+# - name: Install Neovim
+#   ansible.builtin.apt:
+#     name:
+#       - neovim
+#     state: latest
+#   # noqa package-latest
+
+- name: Create Neovim config directory
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.config/nvim"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0755"
+
+- name: Check if Lazyvim is present
+  ansible.builtin.stat:
+    path: "/home/{{ ornare_user }}/.config/nvim/lua/config/lazy.lua"
+  register: tools_lazyvim_config
+
+- name: Clone Lazyvim starter repo
+  ansible.builtin.git:
+    repo: "{{ tools_lazyvim_git_url }}"
+    dest: "/home/{{ ornare_user }}/.config/nvim"
+    version: "HEAD" # noqa: latest[git]
+  become: true
+  become_user: "{{ ornare_user }}"
+  register: tools_lazyvim_clone
+  when: not tools_lazyvim_config.stat.exists
+
+- name: Remove the Lazyvim .git directory
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/.config/nvim/.git"
+    state: absent
+  become: true
+  become_user: "{{ ornare_user }}"
+  when: tools_lazyvim_clone.changed
+  # noqa no-handler
+
+- name: Add Neovim/Lazyvim config files
+  ansible.builtin.template:
+    src: ".config/nvim/{{ item }}"
+    dest: "/home/{{ ornare_user }}/.config/nvim/{{ item }}"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+  loop:
+    - lua/config/keymaps.lua
+    - lua/config/options.lua
+    - lua/plugins/colorscheme.lua
+    - lua/plugins/snacks.lua
+    - lua/plugins/blink.lua
+    - lua/plugins/orgmode.lua
+
+- name: Create fish config file for nvim
+  ansible.builtin.template:
+    src: .config/fish/conf.d/nvim.fish
+    dest: "/home/{{ ornare_user }}/.config/fish/conf.d/nvim.fish"
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0644"
+
+- name: Create orgfiles directory
+  ansible.builtin.file:
+    path: "/home/{{ ornare_user }}/orgfiles"
+    state: directory
+    owner: "{{ ornare_user }}"
+    group: "{{ ornare_user }}"
+    mode: "0775"
